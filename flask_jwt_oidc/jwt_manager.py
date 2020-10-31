@@ -23,7 +23,6 @@ class JwtManager(object):
         self.jwks_uri = None
         self.issuer = None
         self.audience = None
-        self.client_secret = None
         self.cache = None
         self.caching_enabled = False
 
@@ -59,7 +58,6 @@ class JwtManager(object):
             self.issuer = app.config.get('JWT_OIDC_TEST_ISSUER', 'localhost.localdomain')
             self.jwt_oidc_test_keys = app.config.get('JWT_OIDC_TEST_KEYS', None)
             self.audience = app.config.get('JWT_OIDC_TEST_AUDIENCE', None)
-            self.client_secret = app.config.get('JWT_OIDC_TEST_CLIENT_SECRET', None)
             self.jwt_oidc_test_private_key_pem = app.config.get('JWT_OIDC_TEST_PRIVATE_KEY_PEM', None)
 
             if self.jwt_oidc_test_keys:
@@ -94,13 +92,11 @@ class JwtManager(object):
                 self.cache = SimpleCache(default_timeout=app.config.get('JWT_OIDC_JWKS_CACHE_TIMEOUT', 300))
 
             self.audience = app.config.get('JWT_OIDC_AUDIENCE', None)
-            self.client_secret = app.config.get('JWT_OIDC_CLIENT_SECRET', None)
 
         app.logger.debug('JWKS_URI: {}'.format(self.jwks_uri))
         app.logger.debug('ISSUER: {}'.format(self.issuer))
         app.logger.debug('ALGORITHMS: {}'.format(self.algorithms))
         app.logger.debug('AUDIENCE: {}'.format(self.audience))
-        app.logger.debug('CLIENT_SECRET: {}'.format(self.client_secret))
         app.logger.debug('JWT_OIDC_TEST_MODE: {}'.format(self.jwt_oidc_test_mode))
         app.logger.debug('JWT_OIDC_TEST_KEYS: {}'.format(self.jwt_oidc_test_keys))
 
