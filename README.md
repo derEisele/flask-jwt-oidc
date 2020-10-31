@@ -25,7 +25,6 @@ Create a .env file,  or OS configmap, shell exports, etc.
 #.env
 export JWT_OIDC_WELL_KNOWN_CONFIG="https://KEYCLOAK-SERVICE/auth/realms/REALM-NAME/.well-known/openid-configuration"
 export JWT_OIDC_AUDIENCE="keycloak-client"
-export JWT_OIDC_CLIENT_SECRET="keycloak-client-secret"
 ```
 
 Create a config file, that reads in the environment variables:
@@ -44,7 +43,6 @@ class Config(object):
 
     JWT_OIDC_WELL_KNOWN_CONFIG = env.get('JWT_OIDC_WELL_KNOWN_CONFIG')
     JWT_OIDC_AUDIENCE = env.get('JWT_OIDC_AUDIENCE')
-    JWT_OIDC_CLIENT_SECRET = env.get('JWT_OIDC_CLIENT_SECRET')
 ```
 
 Create a flask script that to use the JWT services
