@@ -10,8 +10,7 @@ from .exceptions import AuthError
 
 
 class JwtManager(object):
-
-    ALGORITHMS = ["RS256"]
+    ALGORITHMS = "RS256"
 
     def __init__(self, app=None):
 
