@@ -2,7 +2,7 @@ from flask import jsonify
 import pytest
 
 
-def helper_create_jwt(jwt_manager, roles = []):
+def helper_create_jwt(jwt_manager, roles=[]):
     token_header = {
         "alg": "RS256",
         "typ": "JWT",
@@ -25,8 +25,7 @@ def helper_create_jwt(jwt_manager, roles = []):
 
 
 def test_protected_requires_auth(client, app, jwt):
-
-    message='This is an unprotected end-point'
+    message = 'This is an unprotected end-point'
 
     @app.route('/protected')
     @jwt.requires_auth
@@ -50,7 +49,6 @@ decorator_role_test_data = [
 
 @pytest.mark.parametrize("test_name, jwt_role, endpoint_role, expected_code", decorator_role_test_data)
 def test_protected_auth_and_role(client, app, jwt, test_name, jwt_role, endpoint_role, expected_code):
-
     message = 'This is an unprotected end-point'
 
     @app.route('/protected')
@@ -62,8 +60,7 @@ def test_protected_auth_and_role(client, app, jwt, test_name, jwt_role, endpoint
     headers = {'Authorization': 'Bearer ' + token}
     rv = client.get('/protected', headers=headers)
 
-    if expected_code is 200:
+    if expected_code == 200:
         assert message.encode('utf-8') in rv.data
 
     assert rv.status_code == expected_code
-

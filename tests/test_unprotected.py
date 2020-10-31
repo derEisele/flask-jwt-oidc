@@ -2,8 +2,7 @@ from flask import jsonify
 
 
 def test_unprotected(client, app):
-
-    message='This is an unprotected end-point'
+    message = 'This is an unprotected end-point'
 
     @app.route('/unprotected')
     def get():
@@ -11,6 +10,6 @@ def test_unprotected(client, app):
 
     rv = client.get('/unprotected')
 
-    print ('test is', rv.data)
+    print('test is', rv.data)
 
     assert message.encode('utf-8') in rv.data

@@ -1,4 +1,3 @@
-import ssl
 import json
 
 from flask import request, current_app, _request_ctx_stack, jsonify, g
@@ -123,25 +122,25 @@ class JwtManager(object):
         auth = request.headers.get("Authorization", None)
         if not auth:
             raise AuthError({"code": "authorization_header_missing",
-                        "description": "Authorization header is expected"}
-                            ,401)
+                             "description": "Authorization header is expected"}
+                            , 401)
 
         parts = auth.split()
 
         if parts[0].lower() != "bearer":
             raise AuthError({"code": "invalid_header",
-                        "description": "Authorization header must start with Bearer"}
-                            ,401)
+                             "description": "Authorization header must start with Bearer"}
+                            , 401)
 
         elif len(parts) < 2:
             raise AuthError({"code": "invalid_header",
-                        "description": "Token not found after Bearer"}
-                            ,401)
+                             "description": "Token not found after Bearer"}
+                            , 401)
 
         elif len(parts) > 2:
             raise AuthError({"code": "invalid_header",
-                        "description": "Authorization header is an invalid token structure"}
-                            ,401)
+                             "description": "Authorization header is an invalid token structure"}
+                            , 401)
 
         return parts[1]
 
@@ -166,6 +165,7 @@ class JwtManager(object):
             roles [str,]: Comma separated list of valid roles
             JWT_ROLE_CALLBACK (fn): The callback added to the Flask configuration
         """
+
         def decorated(f):
             @wraps(f)
             def wrapper(*args, **kwargs):
@@ -175,7 +175,9 @@ class JwtManager(object):
                 raise AuthError({"code": "missing_a_valid_role",
                                  "description":
                                      "Missing a role required to access this endpoint"}, 401)
+
             return wrapper
+
         return decorated
 
     def validate_roles(self, required_roles):
@@ -199,6 +201,7 @@ class JwtManager(object):
             required_roles [str,]: Comma separated list of required roles
             JWT_ROLE_CALLBACK (fn): The callback added to the Flask configuration
         """
+
         def decorated(f):
             @wraps(f)
             def wrapper(*args, **kwargs):
@@ -208,15 +211,17 @@ class JwtManager(object):
                 raise AuthError({"code": "missing_required_roles",
                                  "description":
                                      "Missing the role(s) required to access this endpoint"}, 401)
+
             return wrapper
+
         return decorated
 
     def requires_auth(self, f):
         """Validates the Bearer Token
         """
+
         @wraps(f)
         def decorated(*args, **kwargs):
-
             self._require_auth_validation(*args, **kwargs)
 
             return f(*args, **kwargs)
@@ -245,7 +250,7 @@ class JwtManager(object):
                                  "No KID in token header"}, 401)
 
         rsa_key = self.get_rsa_key(self.get_jwks(), unverified_header["kid"])
-        
+
         if not rsa_key and self.caching_enabled:
             # Could be key rotation, invalidate the cache and try again
             self.cache.delete('jwks')
@@ -254,7 +259,7 @@ class JwtManager(object):
         if not rsa_key:
             raise AuthError({"code": "invalid_header",
                              "description": "Unable to find jwks key referenced in token"}, 401)
-            
+
         try:
             payload = jwt.decode(
                 token,
@@ -281,7 +286,7 @@ class JwtManager(object):
     def get_jwks(self):
         if self.jwt_oidc_test_mode:
             return self.jwt_oidc_test_keys
-        
+
         if self.caching_enabled:
             return self._get_jwks_from_cache()
         else:
@@ -299,7 +304,7 @@ class JwtManager(object):
         return json.loads(jsonurl.read().decode("utf-8"))
 
     def create_jwt(self, claims, header):
-        token = jwt.encode(claims,self.jwt_oidc_test_private_key_pem, headers=header, algorithm='RS256')
+        token = jwt.encode(claims, self.jwt_oidc_test_private_key_pem, headers=header, algorithm='RS256')
         return token
 
     def get_rsa_key(self, jwks, kid):
